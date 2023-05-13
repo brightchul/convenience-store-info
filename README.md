@@ -2,16 +2,42 @@
 
 ## How to use 
 
-- .env_sample을 보고 .env를 생성한다.
 - python 환경 세팅을 한다.
 
-```
+```shell
 git clone https://github.com/brightchul/convenience-store-info.git
+cd convenience-store-info
+
+# venv 생성
 python3 -m venv venv
-. ./venv/bin/activate  # mac, window, linux에 따라 조금씩 다름
+
+# venv 실행
+# linux : bin/activate
+# window : Scripts/activate
+. ./venv/bin/activate  
+
+# 라이브러리 설치
 pip install -r requirements.txt
 
+# 실행 cu, gs, seven11, emart24
 python3 ./cu/cu_item.py
+```
+
+## Structure
+
+```
+.
+├── cu
+│   └── cu_item.py
+├── emart24
+│   └── emart24_item.py
+├── gs
+│   └── gs_item.py
+├── seven11
+│   └── seven11.py
+├── README.md
+├── requirements.txt
+└── venv
 ```
 
 ## Dependencies
@@ -21,7 +47,6 @@ beautifulsoup4==4.12.2
 certifi==2023.5.7
 charset-normalizer==3.1.0
 idna==3.4
-python-dotenv==1.0.0
 requests==2.30.0
 soupsieve==2.4.1
 urllib3==2.0.2
