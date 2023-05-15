@@ -21,6 +21,9 @@ pip install -r requirements.txt
 
 # 실행 cu, gs, seven11, emart24
 python3 ./cu/cu_item.py
+
+# 한번에 전부 실행
+python3 multi_runner.py 
 ```
 
 ## Structure
@@ -34,7 +37,8 @@ python3 ./cu/cu_item.py
 ├── gs
 │   └── gs_item.py
 ├── seven11
-│   └── seven11.py
+│   └── seven11_item.py
+├── multi_runner.py
 ├── README.md
 ├── requirements.txt
 └── venv
