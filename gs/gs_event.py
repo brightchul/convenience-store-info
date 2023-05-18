@@ -1,7 +1,6 @@
-from bs4 import BeautifulSoup
 import requests
-import re
-import json
+
+from gs_common import convert_info, get_item_info,  init_setting_data, write_json
 
 HEADERS = {
     "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -12,38 +11,13 @@ HEADERS = {
     "Referer": "http://gs25.gsretail.com/gscvs/ko/products/event-goods"
 }
 
-domain_url = "http://gs25.gsretail.com"
-event_page_url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events"
-
-
-def find_in_arr(target: str, arr: list[str]):
-    for one in arr:
-        if one.find(target) > -1:
-            return one
-    return None
-
-
-def get_session_token():
-    res = requests.get(
-        "http://gs25.gsretail.com/gscvs/ko/products/event-goods")
-    soup = BeautifulSoup(res.text, "html.parser")
-    cookie_list = res.headers["Set-Cookie"].split("; ")
-    session = find_in_arr("JSESSIONID", cookie_list).split("=")[1]
-    token = soup.find("input", attrs={"name": "CSRFToken"}).attrs['value']
-
-    return {"token": token, "session": session}
-
-
-def init_setting_data():
-    session_token = get_session_token()
-
-    return {"url": f'http://gs25.gsretail.com/board/boardList?CSRFToken={session_token["token"]}',
-            "cookies": {"JSESSIONID": session_token["session"]}}
+DOMAIN_URL = "http://gs25.gsretail.com/board/boardList"
 
 
 def get_raw_data_text(url, cookies, page_index, page_size):
     dataParam = {
-        "pageNum": page_index, "pageSize": page_size, "modelName": "event", "parameterList": "brandCode:GS25@!@eventFlag:CURRENT"
+        "pageNum": page_index, "pageSize": page_size, "modelName": "event",
+        "parameterList": "brandCode:GS25@!@eventFlag:CURRENT"
     }
     res = requests.post(url=url, cookies=cookies,
                         data=dataParam, headers=HEADERS)
@@ -52,15 +26,6 @@ def get_raw_data_text(url, cookies, page_index, page_size):
         return res.text
     else:
         return None
-
-
-def convert_info(json_data):
-    info_data = json.loads(json.loads(json_data))
-    return info_data
-
-
-def get_item_info(info):
-    return info["results"]
 
 
 def get_item_info_list(url, cookies):
@@ -82,14 +47,8 @@ def get_item_info_list(url, cookies):
     return total_list
 
 
-def write_json(data, file_name):
-    json_data = json.dumps(data, ensure_ascii=False)
-    with open(file_name, 'w', encoding='utf-8') as file:
-        file.write(json_data)
-
-
 def run():
-    setting_data = init_setting_data()
+    setting_data = init_setting_data(DOMAIN_URL)
     result = get_item_info_list(setting_data["url"], setting_data["cookies"])
     write_json(result, "gs_event.json")
 
