@@ -1,10 +1,9 @@
-import requests
 import json
-
 from enum import Enum
 from typing import Callable
-from bs4 import BeautifulSoup
 
+import requests
+from bs4 import BeautifulSoup
 
 DOMAIN = "https://www.7-eleven.co.kr"
 
