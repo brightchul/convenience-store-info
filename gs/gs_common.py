@@ -1,7 +1,28 @@
-from dataclasses import dataclass
-import requests
 import json
+from dataclasses import dataclass
+
+import requests
 from bs4 import BeautifulSoup
+
+HEADERS = {
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Connection": "keep-alive",
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "Origin": "http://gs25.gsretail.com",
+    "Referer": "http://gs25.gsretail.com/gscvs/ko/products/event-goods"
+}
+
+
+def get_raw_data_text(url, headers, cookies, dataParam):
+
+    res = requests.post(url=url, cookies=cookies,
+                        data=dataParam, headers=headers)
+
+    if res.ok:
+        return res.text
+    else:
+        return None
 
 
 def find_in_arr(target: str, arr: list[str]):
