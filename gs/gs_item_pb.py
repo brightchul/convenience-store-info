@@ -1,14 +1,22 @@
-from gs_common import (HEADERS, convert_info, get_item_info, get_raw_data_text,
+from gs_common import (HEADERS, convert_info, get_raw_data_text,
                        init_setting_data, write_json)
 
-DOMAIN_URL = "http://gs25.gsretail.com/board/boardList"
+PAGE_SIZE = 16
+
+TARGET_URL = "http://gs25.gsretail.com/products/youus-freshfoodDetail-search"
 
 
-def create_event_data_param(page_index, page_size):
+def create_pb_data_param(page_index, page_size):
     return {
-        "pageNum": page_index, "pageSize": page_size, "modelName": "event",
-        "parameterList": "brandCode:GS25@!@eventFlag:CURRENT"
+        "pageNum": page_index, "pageSize": page_size,
+        "searchSrvFoodCK": "DifferentServiceKey",
+        "searchSort": "searchALLSort",
+        "searchProduct": "productALL"
     }
+
+
+def get_item_info(info):
+    return info["SubPageListData"]
 
 
 def get_item_info_list(url, cookies):
@@ -17,7 +25,7 @@ def get_item_info_list(url, cookies):
 
     while (True):
         print(page_number)
-        data_param = create_event_data_param(page_number, 10)
+        data_param = create_pb_data_param(page_number, PAGE_SIZE)
         raw_data = get_raw_data_text(url, HEADERS, cookies, data_param)
         info_data = convert_info(raw_data)
         page_item_info = get_item_info(info_data)
@@ -32,9 +40,9 @@ def get_item_info_list(url, cookies):
 
 
 def run():
-    setting_data = init_setting_data(DOMAIN_URL)
+    setting_data = init_setting_data(TARGET_URL)
     result = get_item_info_list(setting_data["url"], setting_data["cookies"])
-    write_json(result, "gs_event.json")
+    write_json(result, "gs_item_pb.json")
 
 
 if __name__ == "__main__":

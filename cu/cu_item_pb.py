@@ -3,14 +3,19 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+
 from cu_common import write_json
 
-URL = "https://cu.bgfretail.com/event/plusAjax.do"
+URL = "https://cu.bgfretail.com/product/pbAjax.do"
 
 
-def get_raw_data_text(url, page_index, list_type=1):
+def get_raw_data_text(url, page_index, searchgubun):
     req = requests.post(
-        url=url, data={"pageIndex": page_index, "listType": list_type})
+        url=url,
+        data={"pageIndex": page_index,
+              "gdIdx": 0,
+              "searchCondition": "setA",
+              "searchgubun": searchgubun})
 
     if req.ok:
         return req.text
@@ -55,12 +60,15 @@ def get_item_list_info(prod_list):
     return result_list
 
 
-def get_item_info_list():
+# PBG 는 PB상품
+# CUG 는 CU 단독 상품
+def get_item_info_list(searchgubun):
     page_index = 1
     total_list = []
 
     while True:
-        raw_data = get_raw_data_text(URL, page_index)
+        print(f'{searchgubun} == {page_index}')
+        raw_data = get_raw_data_text(URL, page_index, searchgubun)
         prod_list = get_prod_list_html(raw_data)
 
         if len(prod_list) == 0:
@@ -74,8 +82,11 @@ def get_item_info_list():
 
 
 def run():
-    result = get_item_info_list()
-    write_json(result, "cu_item.json")
+    result = []
+    result.extend(get_item_info_list("PBG"))
+    result.extend(get_item_info_list("CUG"))
+
+    write_json(result, "cu_pb_item.json")
 
 
 if __name__ == "__main__":

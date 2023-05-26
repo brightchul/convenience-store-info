@@ -1,7 +1,10 @@
-from bs4 import BeautifulSoup
-import requests
-import re
 import json
+import re
+from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
+from cu_common import write_json
 
 URL = "https://linktr.ee/cu_official"
 
@@ -21,9 +24,14 @@ def get_html_from_URL(url):
         return None
 
 
+def get_current_month():
+    return datetime.now().month
+
+
 def get_starting_html(html):
+    current_month = get_current_month()
     h3_arr = html.find_all("h3")
-    event_h3 = find_html_arr("5월 이벤트", h3_arr)
+    event_h3 = find_html_arr(f"{current_month}월 이벤트", h3_arr)
     event_h3_parent_div = event_h3.parent
     return event_h3_parent_div
 
@@ -62,12 +70,6 @@ def get_event_list():
         prev_div = current_div
 
     return event_list
-
-
-def write_json(data, file_name):
-    json_data = json.dumps(data, ensure_ascii=False)
-    with open(file_name, 'w', encoding='utf-8') as file:
-        file.write(json_data)
 
 
 def run():
