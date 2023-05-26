@@ -1,8 +1,10 @@
-from bs4 import BeautifulSoup
-import requests
-import re
 import json
+import re
 
+import requests
+from bs4 import BeautifulSoup
+
+from cu_common import write_json
 
 URL = "https://cu.bgfretail.com/product/pbAjax.do"
 
@@ -77,12 +79,6 @@ def get_item_info_list(searchgubun):
         page_index += 1
 
     return total_list
-
-
-def write_json(data, file_name):
-    json_data = json.dumps(data, ensure_ascii=False)
-    with open(file_name, 'w', encoding='utf-8') as file:
-        file.write(json_data)
 
 
 def run():
