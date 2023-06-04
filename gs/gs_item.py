@@ -1,5 +1,5 @@
-from gs_common import (HEADERS, convert_info, get_item_info, get_raw_data_text,
-                       init_setting_data, write_json)
+from .gs_common import (HEADERS, convert_info, get_item_info, get_raw_data_text,
+                        init_setting_data, write_json)
 
 PAGE_SIZE = 16
 

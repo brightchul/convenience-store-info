@@ -4,7 +4,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from cu_common import write_json
+from .cu_common import write_json
 
 URL = "https://cu.bgfretail.com/product/pbAjax.do"
 
