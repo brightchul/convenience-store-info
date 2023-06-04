@@ -1,10 +1,9 @@
-import json
 import re
 from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from cu_common import write_json
+from .cu_common import write_json
 
 URL = "https://linktr.ee/cu_official"
 

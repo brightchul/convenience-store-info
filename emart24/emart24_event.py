@@ -1,7 +1,9 @@
-from bs4 import BeautifulSoup
-import requests
 import re
-import json
+
+import requests
+from bs4 import BeautifulSoup
+
+from .emart24_common import write_json
 
 domain_url = "https://www.emart24.co.kr"
 event_page_url = "https://www.emart24.co.kr/event/ing"
@@ -36,12 +38,6 @@ def get_event_info_list_from(html):
     for one in event_html_list:
         result.append(get_event_info_from(one))
     return result
-
-
-def write_json(data, file_name):
-    json_data = json.dumps(data, ensure_ascii=False)
-    with open(file_name, 'w', encoding='utf-8') as file:
-        file.write(json_data)
 
 
 def run():

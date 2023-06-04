@@ -1,9 +1,8 @@
-import json
 import re
 
 import requests
 from bs4 import BeautifulSoup
-from cu_common import write_json
+from .cu_common import write_json
 
 URL = "https://cu.bgfretail.com/event/plusAjax.do"
 
@@ -26,6 +25,9 @@ def get_prod_list_html(data):
 
 def get_item_info(item):
     item_dict = {}
+
+    # 제품 아이디
+    item_dict["productId"] = item.find("a", "prod_item").attrs["href"]
 
     # 이미지 (img, src)
     item_dict["img"] = item.find("img").attrs["src"]

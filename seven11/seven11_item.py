@@ -1,4 +1,4 @@
-from seven11_common import ItemType, get_data_by_type, json_write_file
+from .seven11_common import ItemType, get_data_by_type, json_write_file
 
 
 def run():

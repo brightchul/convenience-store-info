@@ -1,7 +1,9 @@
-from bs4 import BeautifulSoup
-import requests
-import json
 import time
+
+import requests
+from bs4 import BeautifulSoup
+
+from .emart24_common import write_json
 
 
 def get_raw_data_html(page_index):
@@ -75,9 +77,7 @@ def run():
         page_index += 1
         time.sleep(0.1)
 
-    json_data = json.dumps(total_list, ensure_ascii=False)
-    with open("emart24_item.json", 'w', encoding='utf-8') as file:
-        file.write(json_data)
+    write_json(total_list, "emart24_item.json")
 
 
 if __name__ == "__main__":
