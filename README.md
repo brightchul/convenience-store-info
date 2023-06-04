@@ -18,23 +18,32 @@ python3 -m venv venv
 
 # 라이브러리 설치
 pip install -r requirements.txt
+```
 
-# 실행 cu, gs, seven11, emart24
-python3 ./cu/cu_item.py
-
-# 한번에 전부 실행
+- 한번에 아이템 실행
+```shell
 python3 multi_runner.py 
 ```
+
+
+- 개별 실행 cu, gs, seven11, emart24
+```shell
+python -m gs.gs_item 
+```
+
+
 
 ## Structure
 
 ```
 .
 ├── cu
+│   ├── cu_common.py
 │   ├── cu_event.py
 │   ├── cu_item.py
 │   └── cu_item_pb.py
 ├── emart24
+│   ├── emart24_common.py
 │   ├── emart24_event.py
 │   └── emart24_item.py
 ├── gs
