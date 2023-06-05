@@ -1,6 +1,7 @@
+import asyncio
 import re
 
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
 
 from .cu_common import write_json
@@ -32,29 +33,28 @@ def get_main_category_name(category: str):
         case 70: return "생활용품"
 
 
-def get_raw_data_text(url, page_index, search_main_category, list_type=0):
-    req = requests.post(
+async def get_raw_data_text(session, url, page_index, search_main_category, list_type=0):
+    async with session.post(
         url=url,
         data={
-            "pageIndex": page_index,
-            "searchMainCategory": search_main_category,
+            "pageIndex": str(page_index),
+            "searchMainCategory": str(search_main_category),
             "searchSubCategory": "",
-            "listType": list_type,
+            "listType": str(list_type),
             "searchCondition": "setA",
             "searchUseYn": "N",
-            "gdIdx": 0,
-            "codeParent": search_main_category,
+            "gdIdx": "0",
+            "codeParent": str(search_main_category),
             "user_id": "",
             "search1": "",
             "search2": "",
             "searchKeyword": "",
-        }
-    )
-
-    if req.ok:
-        return req.text
-    else:
-        return None
+        },
+    ) as response:
+        if response.status == 200:
+            return await response.text()
+        else:
+            return None
 
 
 def get_prod_list_html(data):
@@ -98,33 +98,42 @@ def get_item_list_info(prod_list):
     return result_list
 
 
-def get_item_info_list(main_category):
-    page_index = 1
-    total_list = []
+async def get_item_info_list(main_category):
+    async with aiohttp.ClientSession() as session:
+        page_index = 1
+        total_list = []
 
-    while True:
-        print(get_main_category_name(main_category), page_index)
-        raw_data = get_raw_data_text(URL, page_index, main_category)
-        prod_list = get_prod_list_html(raw_data)
+        while True:
+            print(get_main_category_name(main_category), page_index)
+            raw_data = await get_raw_data_text(
+                session, URL, page_index, main_category
+            )
+            prod_list = get_prod_list_html(raw_data)
 
-        if len(prod_list) == 0:
-            break
+            if len(prod_list) == 0:
+                break
 
-        item_info_list = get_item_list_info(prod_list)
-        total_list.extend(item_info_list)
-        page_index += 1
+            item_info_list = get_item_list_info(prod_list)
+            total_list.extend(item_info_list)
+            page_index += 1
 
-    return total_list
+        return total_list
 
 
-def run():
-    result = []
-    # 7 catogories and almost 165 pages
-    for main_category in MAIN_CATEGORIES_NUM:
-        result.append(get_item_info_list(main_category))
+async def run():
+    # 7 catogories and almost 161 pages
+    tasks = [
+        asyncio.create_task(get_item_info_list(main_category)) for main_category in MAIN_CATEGORIES_NUM
+    ]
 
-    write_json(result, "cu_item_all.json")
+    results = await asyncio.gather(*tasks)
+    flattened_result = []
+
+    for result in results:
+        flattened_result.extend(result)
+
+    write_json(flattened_result, "cu_item_all.json")
 
 
 if __name__ == "__main__":
-    run()
+    asyncio.run(run())
