@@ -1,37 +1,12 @@
-import time
-
-import requests
-
-from emart24.emart24_item import get_item_list_html, get_item_list_info
-from .emart24_common import write_json
+from .emart24_common import crawling_runner_by, write_json
 
 
-def get_raw_data_html(page_index):
-    req = requests.get(
-        f"https://www.emart24.co.kr/goods/ff?search=&page={page_index}&category_seq=&align=", verify=False)
-    if req.ok:
-        return req.text
-    else:
-        return None
+def create_request_url(page_index):
+    return f"https://www.emart24.co.kr/goods/ff?search=&page={page_index}&category_seq=&align="
 
 
 def run():
-    page_index = 1
-    total_list = []
-
-    while True:
-        print(page_index)
-        raw_data = get_raw_data_html(page_index)
-        item_list_html = get_item_list_html(raw_data)
-
-        if len(item_list_html) == 0:
-            break
-
-        item_info_list = get_item_list_info(item_list_html)
-        total_list.extend(item_info_list)
-        page_index += 1
-        time.sleep(0.1)
-
+    total_list = crawling_runner_by(create_request_url)
     write_json(total_list, "emart24_fresh_food.json")
 
 
