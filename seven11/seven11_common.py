@@ -1,6 +1,6 @@
 import json
 from enum import Enum
-from typing import Callable
+from typing import Callable, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -17,7 +17,14 @@ class ItemType(Enum):
     NEW_PRODUCT = 8
 
 
-def get_item_type_text(item_type: ItemType):
+class FreshFoodType(Enum):
+    TOTAL = ""
+    LUNCH_BOX = "mini"
+    GIMBAP = "noodle"
+    SANDWICH_HAMBURGER = "d_group"
+
+
+def get_item_type_text(item_type: Union[ItemType, FreshFoodType]):
     match(item_type):
         case ItemType.ONE_ONE: return "1+1"
         case ItemType.TWO_ONE: return "2+1"
@@ -25,6 +32,7 @@ def get_item_type_text(item_type: ItemType):
         case ItemType.DISCOUNT: return "discount"
         case ItemType.PB: return "pb"
         case ItemType.NEW_PRODUCT: return "new"
+        case FreshFoodType.TOTAL: return "freshFood"
 
 
 # page1는 13개, 그 이후 페이지는 10개씩
@@ -110,7 +118,8 @@ INFO_FUNCTIONS = {
     ItemType.GIFT:  get_info_gift,
     ItemType.DISCOUNT:  get_basic_info_product,
     ItemType.PB: get_basic_info_product,
-    ItemType.NEW_PRODUCT: get_basic_info_product
+    ItemType.NEW_PRODUCT: get_basic_info_product,
+    FreshFoodType.TOTAL: get_basic_info_product,
 }
 
 
