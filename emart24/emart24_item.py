@@ -22,8 +22,15 @@ def get_item_list_html(data):
 
 
 def get_item_info(item):
-    item_type = item.find("span", "floatR").attrs["class"][0]
-    item_type_text = item.find("span", item_type).text
+    item_type = ""
+    item_type_text = ""
+
+    if item.find("span", "floatR") != None:
+        item_type = item.find("span", "floatR").attrs["class"][0]
+
+    if item_type != "":
+        item_type_text = item.find("span", item_type).text
+
     item_title = item.find("div", "itemtitle").text.replace("\n", "")
     item_img = item.find("div", "itemImg").find("img").attrs["src"]
     item_price = item.find("a", "price").text
@@ -40,6 +47,8 @@ def get_item_info(item):
         case "twopl":
             pass
         case "tripl":
+            pass
+        case _:
             pass
 
     return {
